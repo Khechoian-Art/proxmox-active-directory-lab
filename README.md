@@ -29,7 +29,7 @@ This project demonstrates the deployment, configuration, and troubleshooting of 
 | **101** | `monitor` | LXC | Monitoring Dashboard (Uptime Kuma) | `prox61` | Static (`192.168.17.X`) |
 | **102** | `pbs` | LXC | Proxmox Backup Server (Disaster Recovery) | `prox61` | Static (`192.168.17.Y`) |
 
-*(Сюда перетащи Скриншот 1: Твоё дерево Proxmox со всеми включенными машинами 100-103)*
+*(ФОТО 1: Сюда перетащи скриншот дерева Proxmox из веб-интерфейса, где слева видны обе ноды prox61 и prox91 со всеми запущенными машинами 100-103)*
 
 ---
 
@@ -84,7 +84,9 @@ To ensure reliable DNS resolution and prevent domain replication failures, DHCP 
   2. Flushed the local resolver cache (`ipconfig /flushdns`).
   3. Forced the domain join utilizing the explicit NetBIOS security context: `labprox61\Administrator`.
 
-*(Сюда перетащи Скриншот 2: Окно командной строки cmd с успешным пингом между серверами)*
+*(ФОТО 2: Сюда перетащи скриншот из консоли cmd/PowerShell с успешным пингом ping 192.168.17.10 между контроллерами домена)*
+
+---
 
 ### 📌 Case 4: Resource Optimization via LXC (Monitoring & Backups)
 - **Implementation:** Instead of deploying heavy, resource-intensive Windows or Linux Virtual Machines for auxiliary services, I utilized **Proxmox LXC (Linux Containers)**.
@@ -95,28 +97,29 @@ To ensure reliable DNS resolution and prevent domain replication failures, DHCP 
 
 ---
 
-## 📄 System Configuration Files & Scripts
+## 📄 Hardware Running Configurations & Network Dumps
 
-Below are the actual configuration dumps from the physical switches and the Proxmox hypervisor nodes used to establish the network fabric.
+Below are the verification captures and configuration files extracted directly from the physical network devices and Proxmox configuration layers via CLI.
 
-### 1. Proxmox VE Network Interface Configuration (`/etc/network/interfaces`)
-```text
-auto lo
-iface lo inet loopback
+### 1. Core Router Running Configuration (`show running-config`)
+*(ФОТО 3: Сюда перетащи скриншот терминала/консоли с выводом конфигурации твоего роутера, где видны настройки сабинтерфейсов или маршрутов для лабораторной сети)*
 
-iface eno1 inet manual
-# Physical onboard NIC connected to the trunk port of the managed switch
+### 2. Switch 1 & Switch 2 Interconnect Configuration (`show running-config`)
+*(ФОТО 4: Сюда перетащи скриншот консоли со свитча, где виден кусок конфига 'show running-config' с транковыми портами 802.1Q между коммутаторами и в сторону Proxmox)*
 
-auto vmbr0
-iface vmbr0 inet manual
-        bridge-ports eno1
-        bridge-stp off
-        bridge-fd 0
-        bridge-vlan-aware yes
-# The main virtual bridge, made "VLAN Aware" to pass tags directly to VMs
+### 3. Proxmox VE Node Network Config (`cat /etc/network/interfaces`)
+*(ФОТО 5: Сюда перетащи скриншот из консоли Proxmox, где открыт текстовый файл сетевых настроек хоста с мостом vmbr0 и включенным vlan-aware)*
 
-auto vmbr0.17
-iface vmbr0.17 inet static
-        address 192.168.17.2/24
-        gateway 192.168.1.1
-# Hypervisor management interface bound explicitly to VLAN 17
+---
+
+## 🎯 Current Project Status & Next Steps
+1. **Active Directory:** Cluster is fully operational. Both `DOMC01` and `DOMC02` are running AD DS with verified cross-replication.
+*(ФОТО 6: Сюда вставь тот крутой скриншот из Proxmox, где внутри винды открыта оснастка AD Users and Computers и папка Domain Controllers с серверами DOMC01 и DOMC02)*
+
+2. **Infrastructure Services:** Backups (PBS) and Monitoring (Uptime Kuma) containers are successfully deployed with static IP addresses and running on Node 1 (`prox61`).
+*(ФОТО 7: Сюда перетащи скриншот Server Manager диспетчера серверов на DOMC02, где в левой колонке горят зеленым роли AD DS, DNS и DHCP)*
+
+3. **Next Phase:** Configuring the DHCP scope on `DOMC02`, setting up DFS (Distributed File System) replication (`DFSR01` and `DFSR02`), and deploying Docker hosts for Apache web services according to the planned topology.
+
+---
+*Developed as part of a hands-on Systems Administration & Hypervisor Engineering portfolio.*
