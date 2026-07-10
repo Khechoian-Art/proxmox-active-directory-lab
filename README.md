@@ -114,6 +114,11 @@ Below are the verification captures and configuration files extracted directly f
 ### 1. Core Router Running Configuration (`show running-config`)
 *(ФОТО 3: Сюда перетащи скриншот терминала/консоли с выводом конфигурации твоего роутера, где видны настройки сабинтерфейсов или маршрутов для лабораторной сети)*
 
+<img width="694" height="686" alt="Screenshot_6" src="https://github.com/user-attachments/assets/000070a2-2b54-4dd2-b4f4-c4bc6bf65ef9" />
+<img width="609" height="903" alt="Screenshot_7" src="https://github.com/user-attachments/assets/f8e0435f-6095-4441-bb13-e2201f6cbdbf" />
+<img width="547" height="308" alt="Screenshot_8" src="https://github.com/user-attachments/assets/65f3fecf-844f-47a5-a845-45fc9107742d" />
+
+
 ### 2. Switch 1 & Switch 2 Interconnect Configuration (`show running-config`)
 *(ФОТО 4: Сюда перетащи скриншот консоли со свитча, где виден кусок конфига 'show running-config' с транковыми портами 802.1Q между коммутаторами и в сторону Proxmox)*
 
