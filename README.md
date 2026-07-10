@@ -14,6 +14,63 @@ This project demonstrates the deployment, configuration, and troubleshooting of 
 - **Virtualization Layer:** QEMU (Machine Type: `q35`, `OVMF UEFI`), LXC (Linux Containers)
 
 ---
+### 🌐 Network Configuration & Implementation Details
+
+To achieve complete isolation for the domain traffic, the network infrastructure was partitioned into explicit logical segments using a combination of L2 switching, hypervisor-level bridging, and static guest OS routing.
+
+#### Step 1: Physical Network Layer (Router & Dual-Switch Trunking)
+- **Infrastructure Hardware:** 1 Core Router, 2 Managed L2/L3 Switches.
+- **VLAN ID:** `17` (Dedicated for isolated Active Directory management, replication, and cluster traffic).
+- **Trunking Implementation:** - The **Core Router** was configured with subinterfaces to handle inter-VLAN routing and provide upstream access for the laboratory network.
+  - An **802.1Q Trunk link** was established to interconnect **Switch 1** and **Switch 2**, successfully extending the logical layer-2 broadcast domain (VLAN 17) across both physical switches.
+  - The physical uplinks from both **Proxmox hosts** (`prox61` and `prox91`) were connected to designated **Trunk ports** on their respective switches. This ensures that tagged VLAN 17 frames are passed natively into the hypervisors' virtual bridges (`vmbr0`) without stripping the VLAN headers.
+
+#### Step 2: Hypervisor Layer (Proxmox VE Network Bridge)
+- **Virtual Bridge:** `vmbr0` (Linux Bridge mapped to the physical network interface card).
+- **VLAN Aware:** Enabled on `vmbr0` to allow the virtual switch to seamlessly manage multiple VLAN tags.
+- **Guest NIC Assignment:** For both domain controllers (`DOMC01` and `DOMC02`), the virtual network interface was linked to `vmbr0` with the **VLAN Tag** field explicitly set to `17`.
+
+#### Step 3: Guest OS Layer (Windows Server Static IP Architecture)
+To ensure reliable DNS resolution and prevent domain replication failures, DHCP was bypassed on the infrastructure layer in favor of explicit static assignments.
+
+##### Primary Domain Controller (`DOMC01`) Configuration:
+- **IP Address:** `192.168.17.10`
+- **Subnet Mask:** `255.255.255.0`
+- **Default Gateway:** `192.168.1.1` *(Note: Configured for upstream laboratory routing architecture)*
+- **Preferred DNS Server:** `127.0.0.1` (Points to its own local AD-integrated DNS zone)
+- **Alternate DNS Server:** `192.168.17.11` (Cross-linked to the backup domain controller for high availability)
+
+##### Secondary Domain Controller (`DOMC02`) Configuration:
+- **IP Address:** `192.168.17.11`
+- **Subnet Mask:** `255.255.255.0`
+- **Default Gateway:** `192.168.1.1`
+- **Preferred DNS Server:** `192.168.17.10` (Crucial for locating the PDC during initial domain replication and join phases)
+- **Alternate DNS Server:** `127.0.0.1` (Fallback to its local DNS role after promotion)
+
+*(Вставь сюда Скриншот 2 с успешным пингом или скриншот настроек IPv4 из Windows, чтобы подтвердить эти параметры цифрами)*
+#### 2. Managed Switches Interconnect & Trunking Configuration (CLI Dump)
+This snippet demonstrates how the VLAN was defined and how the inter-switch link, as well as the Proxmox uplinks, were explicitly locked into 802.1Q Trunk mode.
+
+```ini
+# [Executed on both Switch 1 and Switch 2]
+# Defining the isolated laboratory VLAN
+vlan 17
+ name AD_Lab_Traffic
+exit
+
+# Configuring the Inter-Switch Link (Trunk between Switch 1 and Switch 2)
+interface ethernet 1/24
+ switchport mode trunk
+ switchport trunk allowed vlan 17
+ description Inter-Switch_Trunk_Line
+exit
+
+# Configuring the Uplink port connected to the local Proxmox Node (prox61 / prox91)
+interface ethernet 1/1
+ switchport mode trunk
+ switchport trunk allowed vlan 17
+ description Uplink_to_Proxmox_Host
+exit
 
 ## 📈 Network & Architecture Topology
 - **Cluster Name:** `LAB-CLUSTER`
