@@ -94,6 +94,9 @@ To ensure reliable DNS resolution and prevent domain replication failures, DHCP 
 - **Services Deployed:**
   - **Proxmox Backup Server (PBS):** Configured in container `102` to handle deduplicated, incremental backups of the critical Active Directory VMs, ensuring a robust Disaster Recovery plan.
   - **Uptime Kuma:** Deployed in container `101` to provide real-time monitoring and alerting for ICMP connectivity and DNS resolution across the `labprox61.local` domain.
+  
+  <img width="1908" height="893" alt="image" src="https://github.com/user-attachments/assets/65974ccf-da2e-4d24-b404-35744a33cf8d" />
+
 - **Outcome:** Achieved a highly responsive infrastructure layer with minimal CPU/RAM overhead (the PBS container idles at ~2% CPU and less than 150MB of RAM).
 
 ---
