@@ -124,9 +124,11 @@ Below are the verification captures and configuration files extracted directly f
 <img width="585" height="441" alt="image" src="https://github.com/user-attachments/assets/ccc030bc-b263-4dad-908e-873298ea9dfa" />
 
 ### 3. Proxmox VE Node Network Config (`cat /etc/network/interfaces`)
-*(ФОТО 5: Сюда перетащи скриншот из консоли Proxmox, где открыт текстовый файл сетевых настроек хоста с мостом vmbr0 и включенным vlan-aware)*
+
+<img width="680" height="481" alt="Screenshot_11" src="https://github.com/user-attachments/assets/b4ba4b72-0c02-44f5-a6fa-2ecae9dd8bec" />
 
 ---
+
 
 ## 🎯 Current Project Status & Next Steps
 1. **Active Directory:** Cluster is fully operational. Both `DOMC01` and `DOMC02` are running AD DS with verified cross-replication.
