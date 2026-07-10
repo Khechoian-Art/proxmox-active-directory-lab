@@ -55,6 +55,7 @@ The value of this home lab lies in resolving complex integration issues and opti
   1. Purged the public `8.8.8.8` address, locking down the DNS loop explicitly between `192.168.17.10` and `127.0.0.1`.
   2. Flushed the local resolver cache (`ipconfig /flushdns`).
   3. Forced the domain join utilizing the explicit NetBIOS security context: `labprox61\Administrator`.
+  <img width="1480" height="615" alt="image" src="https://github.com/user-attachments/assets/90d7465e-7b35-48f2-ac51-6476a30d8cb8" />
 
 ### 📌 Case 4: Resource Optimization via LXC (Monitoring & Backups)
 - **Implementation:** Instead of deploying heavy, resource-intensive Windows or Linux Virtual Machines for auxiliary services, I utilized **Proxmox LXC (Linux Containers)**.
