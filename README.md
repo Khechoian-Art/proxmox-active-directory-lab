@@ -135,9 +135,10 @@ Below are the verification captures and configuration files extracted directly f
 <img width="1327" height="467" alt="Screenshot_12" src="https://github.com/user-attachments/assets/d62ec063-2e26-47f6-b84e-6bf0e485e67c" />
 
 2. **Infrastructure Services:** Backups (PBS) and Monitoring (Uptime Kuma) containers are successfully deployed with static IP addresses and running on Node 1 (`prox61`).
-*(ФОТО 7: Сюда перетащи скриншот Server Manager диспетчера серверов на DOMC02, где в левой колонке горят зеленым роли AD DS, DNS и DHCP)*
+
+<img width="1799" height="848" alt="Screenshot_13" src="https://github.com/user-attachments/assets/a74bcb15-a63e-4789-868e-f0abb3901f81" />
+
 
 3. **Next Phase:** Configuring the DHCP scope on `DOMC02`, setting up DFS (Distributed File System) replication (`DFSR01` and `DFSR02`), and deploying Docker hosts for Apache web services according to the planned topology.
 
 ---
-*Developed as part of a hands-on Systems Administration & Hypervisor Engineering portfolio.*
