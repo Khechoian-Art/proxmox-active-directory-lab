@@ -25,10 +25,10 @@ This project demonstrates the deployment, configuration, and troubleshooting of 
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **100** | `DOMC01` | VM | Primary Domain Controller (PDC, DNS) | `prox61` | `192.168.17.10` |
 | **103** | `DOMC02` | VM | Secondary Domain Controller (BDC, DHCP) | `prox91` | `192.168.17.11` |
-| **101** | `monitor` | LXC | Monitoring Dashboard (Uptime Kuma) | `prox61` | DHCP / Static |
-| **102** | `pbs` | LXC | Proxmox Backup Server (Disaster Recovery) | `prox61` | DHCP / Static |
+| **101** | `monitor` | LXC | Monitoring Dashboard (Uptime Kuma) | `prox61` | Static (`192.168.17.X`) |
+| **102** | `pbs` | LXC | Proxmox Backup Server (Disaster Recovery) | `prox61` | Static (`192.168.17.Y`) |
+<img width="1354" height="491" alt="image" src="https://github.com/user-attachments/assets/0cc1aeb0-9e3b-4da9-97f8-420895b120f7" />
 
-*(Вставь сюда скриншот твоего Proxmox, где видно список виртуалок и графики CPU)*
 
 ---
 
