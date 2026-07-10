@@ -84,7 +84,8 @@ To ensure reliable DNS resolution and prevent domain replication failures, DHCP 
   2. Flushed the local resolver cache (`ipconfig /flushdns`).
   3. Forced the domain join utilizing the explicit NetBIOS security context: `labprox61\Administrator`.
 
-*(ФОТО 2: Сюда перетащи скриншот из консоли cmd/PowerShell с успешным пингом ping 192.168.17.10 между контроллерами домена)*
+<img width="1396" height="534" alt="Screenshot_1" src="https://github.com/user-attachments/assets/fcf8d113-0d8e-4700-8b46-4a7cf8a1440d" />
+
 
 ---
 
