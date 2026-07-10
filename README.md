@@ -40,6 +40,8 @@ The value of this home lab lies in resolving complex integration issues and opti
 ### 📌 Case 0: Bare-Metal Provisioning & Network Fabric Setup
 - **Implementation:** Before deploying virtual machines, the underlying physical and network architecture was engineered from scratch.
 - **Proxmox Clustering:** Installed Proxmox VE on bare-metal hardware. Configured Linux networking bridges (`vmbr0`) and established a stable, multi-node hypervisor cluster linking `prox61` and `prox91` nodes.
+<img width="955" height="361" alt="Screenshot_4" src="https://github.com/user-attachments/assets/5640b72c-360d-4070-8c1a-a14d4904a9cf" />
+
 
 #### 🌐 Network Configuration & Implementation Details
 To achieve complete isolation for the domain traffic, the network infrastructure was partitioned into explicit logical segments using a combination of L2 switching, hypervisor-level bridging, and static guest OS routing.
