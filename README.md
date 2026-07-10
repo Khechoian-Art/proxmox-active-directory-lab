@@ -132,7 +132,7 @@ Below are the verification captures and configuration files extracted directly f
 
 ## 🎯 Current Project Status & Next Steps
 1. **Active Directory:** Cluster is fully operational. Both `DOMC01` and `DOMC02` are running AD DS with verified cross-replication.
-*(ФОТО 6: Сюда вставь тот крутой скриншот из Proxmox, где внутри винды открыта оснастка AD Users and Computers и папка Domain Controllers с серверами DOMC01 и DOMC02)*
+<img width="1327" height="467" alt="Screenshot_12" src="https://github.com/user-attachments/assets/d62ec063-2e26-47f6-b84e-6bf0e485e67c" />
 
 2. **Infrastructure Services:** Backups (PBS) and Monitoring (Uptime Kuma) containers are successfully deployed with static IP addresses and running on Node 1 (`prox61`).
 *(ФОТО 7: Сюда перетащи скриншот Server Manager диспетчера серверов на DOMC02, где в левой колонке горят зеленым роли AD DS, DNS и DHCP)*
