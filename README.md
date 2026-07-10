@@ -112,7 +112,6 @@ To ensure reliable DNS resolution and prevent domain replication failures, DHCP 
 Below are the verification captures and configuration files extracted directly from the physical network devices and Proxmox configuration layers via CLI.
 
 ### 1. Core Router Running Configuration (`show running-config`)
-*(ФОТО 3: Сюда перетащи скриншот терминала/консоли с выводом конфигурации твоего роутера, где видны настройки сабинтерфейсов или маршрутов для лабораторной сети)*
 
 <img width="694" height="686" alt="Screenshot_6" src="https://github.com/user-attachments/assets/000070a2-2b54-4dd2-b4f4-c4bc6bf65ef9" />
 <img width="609" height="903" alt="Screenshot_7" src="https://github.com/user-attachments/assets/f8e0435f-6095-4441-bb13-e2201f6cbdbf" />
@@ -120,7 +119,9 @@ Below are the verification captures and configuration files extracted directly f
 
 
 ### 2. Switch 1 & Switch 2 Interconnect Configuration (`show running-config`)
-*(ФОТО 4: Сюда перетащи скриншот консоли со свитча, где виден кусок конфига 'show running-config' с транковыми портами 802.1Q между коммутаторами и в сторону Proxmox)*
+<img width="589" height="755" alt="Screenshot_9" src="https://github.com/user-attachments/assets/edc9dad6-dfcc-4bba-a21c-06d2b1a2cd7a" />
+<img width="363" height="267" alt="Screenshot_10" src="https://github.com/user-attachments/assets/653b5b32-e6e8-4f5f-b7bf-2580a329e297" />
+<img width="585" height="441" alt="image" src="https://github.com/user-attachments/assets/ccc030bc-b263-4dad-908e-873298ea9dfa" />
 
 ### 3. Proxmox VE Node Network Config (`cat /etc/network/interfaces`)
 *(ФОТО 5: Сюда перетащи скриншот из консоли Proxmox, где открыт текстовый файл сетевых настроек хоста с мостом vmbr0 и включенным vlan-aware)*
