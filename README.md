@@ -68,6 +68,9 @@ The value of this home lab lies in resolving complex integration issues and opti
 
 <img width="1917" height="1051" alt="image" src="https://github.com/user-attachments/assets/f30a5f28-2c9a-4263-b0ba-a2f4671df127" />
 
+<img width="1919" height="977" alt="image" src="https://github.com/user-attachments/assets/6a80f59a-067c-45b3-ad84-1442495da639" />
+
+
 ---
 
 ## 🎯 Current Project Status & Next Steps
