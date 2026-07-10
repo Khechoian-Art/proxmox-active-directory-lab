@@ -48,34 +48,7 @@ To ensure reliable DNS resolution and prevent domain replication failures, DHCP 
 - **Alternate DNS Server:** `127.0.0.1` (Fallback to its local DNS role after promotion)
 
 *(Вставь сюда Скриншот 2 с успешным пингом или скриншот настроек IPv4 из Windows, чтобы подтвердить эти параметры цифрами)*
-#### 2. Managed Switches Interconnect & Trunking Configuration (CLI Dump)
-This snippet demonstrates how the VLAN was defined and how the inter-switch link, as well as the Proxmox uplinks, were explicitly locked into 802.1Q Trunk mode.
 
-```ini
-# [Executed on both Switch 1 and Switch 2]
-# Defining the isolated laboratory VLAN
-vlan 17
- name AD_Lab_Traffic
-exit
-
-# Configuring the Inter-Switch Link (Trunk between Switch 1 and Switch 2)
-interface ethernet 1/24
- switchport mode trunk
- switchport trunk allowed vlan 17
- description Inter-Switch_Trunk_Line
-exit
-
-# Configuring the Uplink port connected to the local Proxmox Node (prox61 / prox91)
-interface ethernet 1/1
- switchport mode trunk
- switchport trunk allowed vlan 17
- description Uplink_to_Proxmox_Host
-exit
-
-## 📈 Network & Architecture Topology
-- **Cluster Name:** `LAB-CLUSTER`
-- **Internal Domain FQDN:** `labprox61.local`
-- **Subnet:** `192.168.17.0/24`
 
 ### Virtual Machines & Containers Allocation:
 | ID | Hostname | Type | Role / Service | Node Location | IP Address |
@@ -137,3 +110,32 @@ The value of this home lab lies in resolving complex integration issues and opti
 
 ---
 *Developed as part of a hands-on Systems Administration & Hypervisor Engineering portfolio.*
+
+#### 2. Managed Switches Interconnect & Trunking Configuration (CLI Dump)
+This snippet demonstrates how the VLAN was defined and how the inter-switch link, as well as the Proxmox uplinks, were explicitly locked into 802.1Q Trunk mode.
+
+```ini
+# [Executed on both Switch 1 and Switch 2]
+# Defining the isolated laboratory VLAN
+vlan 17
+ name AD_Lab_Traffic
+exit
+
+# Configuring the Inter-Switch Link (Trunk between Switch 1 and Switch 2)
+interface ethernet 1/24
+ switchport mode trunk
+ switchport trunk allowed vlan 17
+ description Inter-Switch_Trunk_Line
+exit
+
+# Configuring the Uplink port connected to the local Proxmox Node (prox61 / prox91)
+interface ethernet 1/1
+ switchport mode trunk
+ switchport trunk allowed vlan 17
+ description Uplink_to_Proxmox_Host
+exit
+
+## 📈 Network & Architecture Topology
+- **Cluster Name:** `LAB-CLUSTER`
+- **Internal Domain FQDN:** `labprox61.local`
+- **Subnet:** `192.168.17.0/24`
