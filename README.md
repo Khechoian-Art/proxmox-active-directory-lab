@@ -63,7 +63,7 @@ The value of this home lab lies in resolving complex integration issues and opti
   - **Proxmox Backup Server (PBS):** Configured in container `102` to handle deduplicated, incremental backups of the critical Active Directory VMs, ensuring a robust Disaster Recovery plan.
   - **Uptime Kuma:** Deployed in container `101` to provide real-time monitoring and alerting for ICMP connectivity and DNS resolution across the `labprox61.local` domain.
 - **Outcome:** Achieved a highly responsive infrastructure layer with minimal CPU/RAM overhead (e.g., the PBS container idles at ~2% CPU and less than 150MB of RAM).
-- <img width="1890" height="888" alt="image" src="https://github.com/user-attachments/assets/2a5d523b-0a64-4637-81c0-0580da5fe0b0" />
+<img width="1890" height="888" alt="image" src="https://github.com/user-attachments/assets/2a5d523b-0a64-4637-81c0-0580da5fe0b0" />
 
 
 
