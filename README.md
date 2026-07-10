@@ -1,64 +1,35 @@
 # High-Availability Active Directory Infrastructure & Services on Proxmox VE
 
 ## 🚀 Project Overview
-This project demonstrates the deployment, configuration, and troubleshooting of an enterprise-grade, fault-tolerant infrastructure. The core is a multi-node Active Directory Domain Services (AD DS) ecosystem built on **Windows Server 2025**, supported by lightweight Linux containers (LXC) for monitoring and disaster recovery, all managed within a **Proxmox VE** hypervisor cluster.
+This project demonstrates the deployment, configuration, and troubleshooting of an enterprise-grade, fault-tolerant infrastructure. The core is a multi-node Active Directory Domain Services (AD DS) ecosystem built on **Windows Server 2025**, supported by lightweight Linux containers (LXC) for monitoring and disaster recovery, all managed within a **Proxmox VE** hypervisor cluster (`LAB-CLUSTER`).
 
 ---
 
 ## 🛠️ Tech Stack & Infrastructure Baseline
-- **Hypervisor:** Proxmox VE (Clustered environment)
-- **Virtual Machines (Windows):** Windows Server 2025 (Standard Evaluation) for Core AD services
-- **Containers (Linux LXC):** Debian/Ubuntu templates for auxiliary services
-- **Core Services:** Active Directory (AD DS), DNS, DHCP Server
-- **Infrastructure Services:** Proxmox Backup Server (PBS), Uptime Kuma (Monitoring)
-- **Virtualization Layer:** QEMU (Machine Type: `q35`, `OVMF UEFI`), LXC (Linux Containers)
+- **Physical Hardware & Virtualization:** Bare-metal Proxmox VE installation, High-Availability Clustering.
+- **Network Fabric:** 1 Core Router, 2 Managed L2/L3 Switches (802.1Q VLAN tagging, trunking, inter-switch links).
+- **Virtual Machines (Windows):** Windows Server 2025 (Standard Evaluation) for Core AD services.
+- **Containers (Linux LXC):** Debian/Ubuntu templates for auxiliary services.
+- **Core Services:** Active Directory (AD DS), DNS, DHCP Server.
+- **Infrastructure Services:** Proxmox Backup Server (PBS), Uptime Kuma (Monitoring).
+- **Virtualization Layer:** QEMU (Machine Type: `q35`, `OVMF UEFI`), LXC (Linux Containers).
 
 ---
-### 🌐 Network Configuration & Implementation Details
 
-To achieve complete isolation for the domain traffic, the network infrastructure was partitioned into explicit logical segments using a combination of L2 switching, hypervisor-level bridging, and static guest OS routing.
-
-#### Step 1: Physical Network Layer (Router & Dual-Switch Trunking)
-- **Infrastructure Hardware:** 1 Core Router, 2 Managed L2/L3 Switches.
-- **VLAN ID:** `17` (Dedicated for isolated Active Directory management, replication, and cluster traffic).
-- **Trunking Implementation:** - The **Core Router** was configured with subinterfaces to handle inter-VLAN routing and provide upstream access for the laboratory network.
-  - An **802.1Q Trunk link** was established to interconnect **Switch 1** and **Switch 2**, successfully extending the logical layer-2 broadcast domain (VLAN 17) across both physical switches.
-  - The physical uplinks from both **Proxmox hosts** (`prox61` and `prox91`) were connected to designated **Trunk ports** on their respective switches. This ensures that tagged VLAN 17 frames are passed natively into the hypervisors' virtual bridges (`vmbr0`) without stripping the VLAN headers.
-
-#### Step 2: Hypervisor Layer (Proxmox VE Network Bridge)
-- **Virtual Bridge:** `vmbr0` (Linux Bridge mapped to the physical network interface card).
-- **VLAN Aware:** Enabled on `vmbr0` to allow the virtual switch to seamlessly manage multiple VLAN tags.
-- **Guest NIC Assignment:** For both domain controllers (`DOMC01` and `DOMC02`), the virtual network interface was linked to `vmbr0` with the **VLAN Tag** field explicitly set to `17`.
-
-#### Step 3: Guest OS Layer (Windows Server Static IP Architecture)
-To ensure reliable DNS resolution and prevent domain replication failures, DHCP was bypassed on the infrastructure layer in favor of explicit static assignments.
-
-##### Primary Domain Controller (`DOMC01`) Configuration:
-- **IP Address:** `192.168.17.10`
-- **Subnet Mask:** `255.255.255.0`
-- **Default Gateway:** `192.168.1.1` *(Note: Configured for upstream laboratory routing architecture)*
-- **Preferred DNS Server:** `127.0.0.1` (Points to its own local AD-integrated DNS zone)
-- **Alternate DNS Server:** `192.168.17.11` (Cross-linked to the backup domain controller for high availability)
-
-##### Secondary Domain Controller (`DOMC02`) Configuration:
-- **IP Address:** `192.168.17.11`
-- **Subnet Mask:** `255.255.255.0`
-- **Default Gateway:** `192.168.1.1`
-- **Preferred DNS Server:** `192.168.17.10` (Crucial for locating the PDC during initial domain replication and join phases)
-- **Alternate DNS Server:** `127.0.0.1` (Fallback to its local DNS role after promotion)
-
-*(Вставь сюда Скриншот 2 с успешным пингом или скриншот настроек IPv4 из Windows, чтобы подтвердить эти параметры цифрами)*
-
+## 📈 Network & Architecture Topology
+- **Cluster Name:** `LAB-CLUSTER`
+- **Internal Domain FQDN:** `labprox61.local`
+- **Subnet:** `192.168.17.0/24`
 
 ### Virtual Machines & Containers Allocation:
 | ID | Hostname | Type | Role / Service | Node Location | IP Address |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **100** | `DOMC01` | VM | Primary Domain Controller (PDC, DNS) | `prox61` | `192.168.17.10` |
-| **103** | `DOMC02` | VM | Secondary Domain Controller (BDC, DHCP) | `prox91` | `192.168.17.11` |
-| **101** | `monitor` | LXC | Monitoring Dashboard (Uptime Kuma) | `prox61` | Static (`192.168.17.20`) |
-| **102** | `pbs` | LXC | Proxmox Backup Server (Disaster Recovery) | `prox61` | Static (`192.168.17.30`) |
-<img width="1354" height="491" alt="image" src="https://github.com/user-attachments/assets/0cc1aeb0-9e3b-4da9-97f8-420895b120f7" />
+| **100** | `DOMC01` | VM | Primary Domain Controller (PDC, DNS) | `prox61` | Static (`192.168.17.10`) |
+| **103** | `DOMC02` | VM | Secondary Domain Controller (BDC, DHCP) | `prox91` | Static (`192.168.17.11`) |
+| **101** | `monitor` | LXC | Monitoring Dashboard (Uptime Kuma) | `prox61` | Static (`192.168.17.X`) |
+| **102** | `pbs` | LXC | Proxmox Backup Server (Disaster Recovery) | `prox61` | Static (`192.168.17.Y`) |
 
+*(Сюда перетащи Скриншот 1: Твоё дерево Proxmox со всеми включенными машинами 100-103)*
 
 ---
 
@@ -66,11 +37,38 @@ To ensure reliable DNS resolution and prevent domain replication failures, DHCP 
 
 The value of this home lab lies in resolving complex integration issues and optimizing resource allocation. Below are the key engineering challenges faced during the deployment.
 
+### 📌 Case 0: Bare-Metal Provisioning & Network Fabric Setup
+- **Implementation:** Before deploying virtual machines, the underlying physical and network architecture was engineered from scratch.
+- **Proxmox Clustering:** Installed Proxmox VE on bare-metal hardware. Configured Linux networking bridges (`vmbr0`) and established a stable, multi-node hypervisor cluster linking `prox61` and `prox91` nodes.
+
+#### 🌐 Network Configuration & Implementation Details
+To achieve complete isolation for the domain traffic, the network infrastructure was partitioned into explicit logical segments using a combination of L2 switching, hypervisor-level bridging, and static guest OS routing.
+
+##### Step 1: Physical Network Layer (Router & Dual-Switch Trunking)
+- **VLAN ID:** `17` (Dedicated for isolated Active Directory management, replication, and cluster traffic).
+- **Trunking Implementation:**
+  - The **Core Router** was configured with subinterfaces to handle inter-VLAN routing and provide upstream access.
+  - An **802.1Q Trunk link** was established to interconnect **Switch 1** and **Switch 2**, successfully extending the logical layer-2 broadcast domain (VLAN 17) across both physical switches.
+  - The physical uplinks from both **Proxmox hosts** (`prox61` and `prox91`) were connected to designated **Trunk ports** on their respective switches. This ensures that tagged VLAN 17 frames are passed natively into the hypervisors' virtual bridges (`vmbr0`) without stripping the VLAN headers.
+
+##### Step 2: Hypervisor Layer (Proxmox VE Network Bridge)
+- **Virtual Bridge:** `vmbr0` (Linux Bridge mapped to the physical network interface card).
+- **VLAN Aware:** Enabled on `vmbr0` to allow the virtual switch to seamlessly manage multiple VLAN tags.
+- **Guest NIC Assignment:** For both domain controllers (`DOMC01` and `DOMC02`), the virtual network interface was linked to `vmbr0` with the **VLAN Tag** field explicitly set to `17`.
+
+##### Step 3: Guest OS Layer (Windows Server Static IP Architecture)
+To ensure reliable DNS resolution and prevent domain replication failures, DHCP was bypassed on the infrastructure layer.
+- **DOMC01:** IP `192.168.17.10` | Preferred DNS: `127.0.0.1` | Alternate DNS: `192.168.17.11`
+- **DOMC02:** IP `192.168.17.11` | Preferred DNS: `192.168.17.10` | Alternate DNS: `127.0.0.1`
+
+---
+
 ### 📌 Case 1: Windows Server 2025 UEFI Installation Timeout (VirtIO Bug)
 - **Problem:** During the initial installation boot sequence with Machine Type `q35` and `OVMF (UEFI)` BIOS, the installer would drop into an infinite loop or throw a UEFI Shell timeout error.
 - **Root Cause:** In certain Proxmox configurations, Windows Server 2025 UEFI bootloaders fail to initialize early SATA/SCSI storage layers for the boot CD/DVD.
-- **Resolution:** 1. Isolated the installation ISO by moving its controller exclusively to the **IDE bus** (`ide2`).
-  2. Placed the VirtIO drivers ISO onto a secondary **SATA controller**. 
+- **Resolution:**
+  1. Isolated the installation ISO by moving its controller exclusively to the **IDE bus** (`ide2`).
+  2. Placed the VirtIO drivers ISO onto a secondary **SATA controller**.
   3. Adjusted the **Boot Order** to prioritize the IDE drive, successfully bypassing the UEFI initialization bug.
 
 ### 📌 Case 2: Post-Boot Bootloop & CPU Architecture Incompatibility
@@ -85,57 +83,40 @@ The value of this home lab lies in resolving complex integration issues and opti
   1. Purged the public `8.8.8.8` address, locking down the DNS loop explicitly between `192.168.17.10` and `127.0.0.1`.
   2. Flushed the local resolver cache (`ipconfig /flushdns`).
   3. Forced the domain join utilizing the explicit NetBIOS security context: `labprox61\Administrator`.
-  <img width="1480" height="615" alt="image" src="https://github.com/user-attachments/assets/90d7465e-7b35-48f2-ac51-6476a30d8cb8" />
+
+*(Сюда перетащи Скриншот 2: Окно командной строки cmd с успешным пингом между серверами)*
 
 ### 📌 Case 4: Resource Optimization via LXC (Monitoring & Backups)
 - **Implementation:** Instead of deploying heavy, resource-intensive Windows or Linux Virtual Machines for auxiliary services, I utilized **Proxmox LXC (Linux Containers)**.
 - **Services Deployed:**
   - **Proxmox Backup Server (PBS):** Configured in container `102` to handle deduplicated, incremental backups of the critical Active Directory VMs, ensuring a robust Disaster Recovery plan.
   - **Uptime Kuma:** Deployed in container `101` to provide real-time monitoring and alerting for ICMP connectivity and DNS resolution across the `labprox61.local` domain.
-- **Outcome:** Achieved a highly responsive infrastructure layer with minimal CPU/RAM overhead (e.g., the PBS container idles at ~2% CPU and less than 150MB of RAM).
-
-<img width="1890" height="888" alt="image" src="https://github.com/user-attachments/assets/2a5d523b-0a64-4637-81c0-0580da5fe0b0" />
-
-<img width="1917" height="1051" alt="image" src="https://github.com/user-attachments/assets/f30a5f28-2c9a-4263-b0ba-a2f4671df127" />
-
-<img width="1919" height="977" alt="image" src="https://github.com/user-attachments/assets/6a80f59a-067c-45b3-ad84-1442495da639" />
-
+- **Outcome:** Achieved a highly responsive infrastructure layer with minimal CPU/RAM overhead (the PBS container idles at ~2% CPU and less than 150MB of RAM).
 
 ---
 
-## 🎯 Current Project Status & Next Steps
-1. **Active Directory:** Cluster is fully operational. Both `DOMC01` and `DOMC02` are running AD DS with verified cross-replication.
-2. **Infrastructure Services:** Backups (PBS) and Monitoring (Uptime Kuma) containers are successfully deployed and running on Node 1 (`prox61`).
-3. **Next Phase:** Configuring the DHCP scope on `DOMC02`, setting up DFS (Distributed File System) replication (`DFSR01` and `DFSR02`), and deploying Docker hosts for Apache web services according to the planned topology.
+## 📄 System Configuration Files & Scripts
 
----
-*Developed as part of a hands-on Systems Administration & Hypervisor Engineering portfolio.*
+Below are the actual configuration dumps from the physical switches and the Proxmox hypervisor nodes used to establish the network fabric.
 
-#### 2. Managed Switches Interconnect & Trunking Configuration (CLI Dump)
-This snippet demonstrates how the VLAN was defined and how the inter-switch link, as well as the Proxmox uplinks, were explicitly locked into 802.1Q Trunk mode.
+### 1. Proxmox VE Network Interface Configuration (`/etc/network/interfaces`)
+```text
+auto lo
+iface lo inet loopback
 
-```ini
-# [Executed on both Switch 1 and Switch 2]
-# Defining the isolated laboratory VLAN
-vlan 17
- name AD_Lab_Traffic
-exit
+iface eno1 inet manual
+# Physical onboard NIC connected to the trunk port of the managed switch
 
-# Configuring the Inter-Switch Link (Trunk between Switch 1 and Switch 2)
-interface ethernet 1/24
- switchport mode trunk
- switchport trunk allowed vlan 17
- description Inter-Switch_Trunk_Line
-exit
+auto vmbr0
+iface vmbr0 inet manual
+        bridge-ports eno1
+        bridge-stp off
+        bridge-fd 0
+        bridge-vlan-aware yes
+# The main virtual bridge, made "VLAN Aware" to pass tags directly to VMs
 
-# Configuring the Uplink port connected to the local Proxmox Node (prox61 / prox91)
-interface ethernet 1/1
- switchport mode trunk
- switchport trunk allowed vlan 17
- description Uplink_to_Proxmox_Host
-exit
-
-## 📈 Network & Architecture Topology
-- **Cluster Name:** `LAB-CLUSTER`
-- **Internal Domain FQDN:** `labprox61.local`
-- **Subnet:** `192.168.17.0/24`
+auto vmbr0.17
+iface vmbr0.17 inet static
+        address 192.168.17.2/24
+        gateway 192.168.1.1
+# Hypervisor management interface bound explicitly to VLAN 17
