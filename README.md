@@ -26,8 +26,8 @@ This project demonstrates the deployment, configuration, and troubleshooting of 
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **100** | `DOMC01` | VM | Primary Domain Controller (PDC, DNS) | `prox61` | Static (`192.168.17.10`) |
 | **103** | `DOMC02` | VM | Secondary Domain Controller (BDC, DHCP) | `prox91` | Static (`192.168.17.11`) |
-| **101** | `monitor` | LXC | Monitoring Dashboard (Uptime Kuma) | `prox61` | Static (`192.168.17.X`) |
-| **102** | `pbs` | LXC | Proxmox Backup Server (Disaster Recovery) | `prox61` | Static (`192.168.17.Y`) |
+| **101** | `monitor` | LXC | Monitoring Dashboard (Uptime Kuma) | `prox61` | Static (`192.168.17.20`) |
+| **102** | `pbs` | LXC | Proxmox Backup Server (Disaster Recovery) | `prox61` | Static (`192.168.17.30`) |
 
 <img width="1361" height="469" alt="Screenshot_2" src="https://github.com/user-attachments/assets/9f1b7e85-946a-4b2a-a245-2f0146818c59" />
 
